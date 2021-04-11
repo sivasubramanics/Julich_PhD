@@ -1,0 +1,20 @@
+Challenge Three - Data visualization and interpretation
+Genetic diversity within species is often structured geographically, reflecting both currentecological and historical drivers of genetic differentiation. Thus population structure, andadmixture among populations, should be accounted for when searching for functional diversitywithin species. In this link you can find the Q-output and sample metadata of an Admixture (apopular software to infer population structure) analysis, performed on maize and teosintesamples. In the table stored in file “ maize.3.Q ”, each row represents a sample, in the sameorder as in the also provided “ maize_samples.txt ” metadata file. Considering only themaize samples, plot the Q estimates and the altitude at which each sample was collected. Youcan make the plot and order the samples however you deem appropriate. Besides the code andplot, provide a short biological interpretation (max 50 words) of the admixture analysis andplotted results.
+
+Solution:
+
+The traditional method of ploting Admixture K matrix are through a bar plot and group the samples based on the contribution. Here since we have the geographical data, I tried to over lay the K values on the geo map. For this I have used a readily available Utility source code (http://membres-timc.imag.fr/Olivier.Francois/POPSutilities.R) and Map informations files (http://membres-timc.imag.fr/Olivier.Francois/RasterMaps.zip).
+
+Script: makeAdmixturePlot.R
+
+InputFiles: 1. maize.3.Q (Admixture Q Matrix)
+			2. Maize.coord (Geographical co-ordinates of each sample collected. Assuming the samples are of in the same order as Q matrix)
+			3. North_America.asc (ascii raster file for the Noth America continent)
+			4. POPSutilities.r (Utility source code for additional functions)
+
+Output: AdmixtureClusters.png
+
+Interpretation:
+The hierarchical population structure has been estimated using the ADMIXTURE program, a model based estimation of ancestry in unrelated individuals using the maximum-likelihood method. ADMIXTURE implements a cross-validation (CV) feature, together with the number of iterations to convergence, determining the number of subpopulations (k values) that best fits the data. The hierarchical population structure analysis with a range of sub-populations might have been performed and, CV helped us to identify k = 3 as possible group s and with different accessions contribution to each subpopulation. Clusters (K) 1 and 2 have mixed effects with the population (of 170) where the accessions might have inferred ancestry. The clarity of the cluster 3 indicates the presence of individuals with similar genetic (ancestral) background.
+
+
