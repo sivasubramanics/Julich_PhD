@@ -1,0 +1,86 @@
+Challenge Two - Applied bioinformatics
+A defining analysis in bioinformatics is searching for similar sequences for a set of querynucleotide or amino acid sequences e.g. using Blast . Reciprocal Best Hits (RBH) are a commonproxy for orthology in comparative genomics (see this article ). Essentially, a RBH is found whenthe proteins encoded by two genes, each in a different genome, find each other as the bestscoring match in the other genome. NCBI's BLAST is the software most usually used for thesequence comparisons necessary to find RBHs.
+Download any two Nostoc bacterial genomes from NCBI , use one complete genome (the“reference”) and of the other only a small fraction e.g. one hundred genes (the “subject”). Writea simple pipeline that identifies the RBH for the “subject” genes. You can use Blast , Blat ,Diamond or any other sequence similarity search tool .You will receive extra points if you use shell commands like cut , sort , awk , and comm toidentify the RBH from the results of the sequence similarity searches.
+
+Pipeline:
+---------
+
+Downloaded gene sequences of 2 strains:
+a. https://www.ncbi.nlm.nih.gov/nuccore/NZ_CP071065.1 as GenesA.fasta
+b. https://www.ncbi.nlm.nih.gov/nuccore/NZ_CP012036.1 as GenesB.fasta
+
+Extracted 100 sequences from Query sequence using below awk
+	awk '{if(f==1){exit};if($0~/^>/){if(i>=1 && i<=100){print n"\n"s}else{if(i>=1){f=1}};i++;n=$1;s="";if(i<=10){}}else{s=s$0}}' GenesB.fasta | fold > Query.fasta
+
+
+Files under Working Directory:
+	README
+	Query.fasta
+	getRBH.sh
+	GenesB.fasta
+	GenesA.fasta
+	GenomeB.fasta
+	GenomeA.fasta
+
+Determining RBH between the 2 files GenesA.fasta and Query.fasta using attached script:
+
+	bash getRBH.sh GenesA.fasta Query.fasta Output
+
+	Terminal Output: 
+
+	-----------------------------------
+	Creating blastDB for GenesA.fasta..
+	-----------------------------------
+
+	CMD: makeblastdb -in GenesA.fasta -dbtype nucl
+
+
+	Building a new DB, current time: 04/11/2021 23:16:59
+	New DB name:   /mnt/c/Users/SBDM/Documents/Personal/Jobs/Julich_PhD/Challenge_2/GenesA.fasta
+	New DB title:  GenesA.fasta
+	Sequence type: Nucleotide
+	Keep MBits: T
+	Maximum file size: 1000000000B
+	Adding sequences from FASTA; added 12308 sequences in 0.509555 seconds.
+
+	----------------------------------
+	Creating blastDB for Query.fasta..
+	----------------------------------
+
+	CMD: makeblastdb -in Query.fasta -dbtype nucl
+
+
+	Building a new DB, current time: 04/11/2021 23:17:00
+	New DB name:   /mnt/c/Users/SBDM/Documents/Personal/Jobs/Julich_PhD/Challenge_2/Query.fasta
+	New DB title:  Query.fasta
+	Sequence type: Nucleotide
+	Keep MBits: T
+	Maximum file size: 1000000000B
+	Adding sequences from FASTA; added 100 sequences in 0.00768304 seconds.
+
+	--------------------------------------------------------
+	Performing blast of DB=GenesA.fasta QUERY=Query.fasta...
+	--------------------------------------------------------
+
+	CMD: blastn -db GenesA.fasta -query Query.fasta -out Output_GenesA_vs_Query.blastout -outfmt 6 -evalue 0.0005
+
+	-------------------------------------------------------------------
+	Performing reciprocal blast of DB=Query.fasta QUERY=GenesA.fasta...
+	-------------------------------------------------------------------
+
+	CMD: blastn -db Query.fasta -query GenesA.fasta -out Output_Query_vs_GenesA.blastout -outfmt 6 -evalue 0.0005
+
+	----------------------------------------------------------------------------------------
+	Determining RBH between QUERY=Query.fasta and DB=Query.fasta. Output File=Output_RBH.out
+	----------------------------------------------------------------------------------------
+
+	Total number of blast hits [ db=GenesA.fasta vs query=Query.fasta ]:44
+	Total number of blast hits [ db=Query.fasta vs query=GenesA.fasta ]:44
+	Total number of RBH :44
+	Output RBH File: Output_RBH.out
+
+	---------------------------------------------------------------------------
+	Finished processing RBH! Thank You!!!
+	contact: c.s.sivasubramani@gmail.com
+	---------------------------------------------------------------------------
+
